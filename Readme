@@ -1,0 +1,41 @@
+# Shipment Management Form
+
+This project implements a Shipment Management Form that allows users to enter, update, and manage shipment data in a database. The form includes various fields such as shipment number, description, source, destination, shipping date, and expected delivery date. It interacts with a backend system to store and retrieve data.
+
+## Features
+
+- **Add New Shipment**: Allows the user to enter a new shipment record.
+- **Update Existing Shipment**: Allows users to modify an existing shipment record based on its unique shipment number.
+- **Form Validation**: Ensures that all fields are properly filled out before submitting the form.
+- **Database Integration**: The data is stored in a database and can be retrieved or updated as needed.
+- **Responsive UI**: The form is designed with a responsive layout using Bootstrap.
+
+## Project Setup
+
+### Prerequisites
+
+- HTML5
+- CSS3
+- Bootstrap 3.4.1 (for responsive design)
+- JavaScript (jQuery, AJAX)
+- External API integration (login2explore API for database interaction)
+
+## File Structure
+
+/shipment-management-form
+    /index.html      # Main form file
+    /README.md       # Project documentation
+
+## Usage
+Entering Data:
+
+Enter a unique shipment number in the "Shipment Number" field.
+If the shipment number doesn't exist, the "Save" button will be enabled.
+After filling out all the fields, click "Save" to store the data.
+Updating Data:
+
+If the shipment number already exists in the database, the form will show existing data, and the "Update" button will be enabled.
+Modify the fields as needed and click "Update" to update the record in the database.
+Resetting the Form:
+
+The "Reset" button will clear all fields and reset the form.

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Shipment Details Form</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Shipment Details Form</h2>
+      <form id="shipmentForm" method="post">
+        <div class="form-group">
+          <label for="shipmentId">Shipment ID:</label>
+          <input
+            type="text"
+            class="form-control"
+            onchange="getShipment()"
+            name="shipmentId"
+            id="shipmentId"
+            placeholder="Enter Shipment ID"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="description"
+            placeholder="Enter Description"
+            name="description"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="source">Source:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="source"
+            placeholder="Enter Source"
+            name="source"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="destination">Destination:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="destination"
+            placeholder="Enter Destination"
+            name="destination"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="shippingDate">Shipping Date:</label>
+          <input
+            type="date"
+            class="form-control"
+            id="shippingDate"
+            placeholder="Enter Shipping Date"
+            name="shippingDate"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="expectedDeliveryDate">Expected Delivery Date:</label>
+          <input
+            type="date"
+            class="form-control"
+            id="expectedDeliveryDate"
+            placeholder="Enter Expected Delivery Date"
+            name="expectedDeliveryDate"
+            required
+          />
+        </div>
+
+        <input
+          type="button"
+          class="btn btn-primary"
+          id="saveShipment"
+          value="Save"
+          onclick="saveShipmentData();"
+        />
+        <input
+          type="button"
+          class="btn btn-primary"
+          id="updateShipment"
+          value="Update"
+          onclick="updateShipmentData();"
+        />
+        <input
+          type="button"
+          class="btn btn-primary"
+          id="resetForm"
+          value="Reset"
+          onclick="resetForm();"
+        />
+      </form>
+    </div>
+
+    <script>
+      function validateAndGetFormData() {
+        var shipmentId = $("#shipmentId").val();
+        if (shipmentId === "") {
+          alert("Shipment ID is required.");
+          $("#shipmentId").focus();
+          return "";
+        }
+
+        var description = $("#description").val();
+        if (description === "") {
+          alert("Description is required.");
+          $("#description").focus();
+          return "";
+        }
+
+        var source = $("#source").val();
+        if (source === "") {
+          alert("Source is required.");
+          $("#source").focus();
+          return "";
+        }
+
+        var destination = $("#destination").val();
+        if (destination === "") {
+          alert("Destination is required.");
+          $("#destination").focus();
+          return "";
+        }
+
+        var shippingDate = $("#shippingDate").val();
+        if (shippingDate === "") {
+          alert("Shipping Date is required.");
+          $("#shippingDate").focus();
+          return "";
+        }
+
+        var expectedDeliveryDate = $("#expectedDeliveryDate").val();
+        if (expectedDeliveryDate === "") {
+          alert("Expected Delivery Date is required.");
+          $("#expectedDeliveryDate").focus();
+          return "";
+        }
+
+        var jsonData = {
+          shipmentId: shipmentId,
+          description: description,
+          source: source,
+          destination: destination,
+          shippingDate: shippingDate,
+          expectedDeliveryDate: expectedDeliveryDate,
+        };
+        return JSON.stringify(jsonData);
+      }
+
+      function resetForm() {
+        $("#shipmentId").val("");
+        $("#description").val("");
+        $("#source").val("");
+        $("#destination").val("");
+        $("#shippingDate").val("");
+        $("#expectedDeliveryDate").val("");
+        $("#shipmentId").focus();
+      }
+
+      function saveShipmentData() {
+        var jsonData = validateAndGetFormData();
+        if (jsonData === "") {
+          return;
+        }
+
+        var putRequestStr = createPUTRequest(
+          "90936861|-31948784479254024|90932362",
+          jsonData,
+          "Student-DB",
+          "Stu-Rel"
+        );
+
+        alert(putRequestStr);
+
+        jQuery.ajaxSetup({ async: false });
+        var resultObj = executeCommandAtGivenBaseUrl(
+          putRequestStr,
+          "http://api.login2explore.com:5577",
+          "/api/iml"
+        );
+        jQuery.ajaxSetup({ async: true });
+
+        alert(JSON.stringify(resultObj));
+        resetForm();
+      }
+
+      function updateShipmentData() {
+        var jsonData = validateAndGetFormData();
+        if (jsonData === "") {
+          return;
+        }
+
+        var updateRequest = createUPDATERecordRequest(
+          "ConnToken",
+          jsonData,
+          "Student-DB",
+          "Stu-Rel",
+          localStorage.getItem("recno")
+        );
+
+        jQuery.ajaxSetup({ async: false });
+        var resJsonObj = executeCommandAtGivenBaseUrl(
+          updateRequest,
+          "http://api.login2explore.com:5577",
+          "/api/iml"
+        );
+        jQuery.ajaxSetup({ async: true });
+
+        alert(JSON.stringify(resJsonObj));
+        resetForm();
+      }
+
+      function getShipment() {
+        var shipmentId = $("#shipmentId").val();
+        if (shipmentId === "") {
+          alert("Shipment ID is required to fetch details.");
+          return;
+        }
+
+        var jsonStr = JSON.stringify({ id: shipmentId });
+
+        var getRequest = createGET_BY_KEYRequest(
+          "ConnToken",
+          "Student-DB",
+          "Stu-Rel",
+          jsonStr
+        );
+
+        jQuery.ajaxSetup({ async: false });
+        var resJsonObj = executeCommandAtGivenBaseUrl(
+          getRequest,
+          "http://api.login2explore.com:5577",
+          "/api/rs"
+        );
+        jQuery.ajaxSetup({ async: true });
+
+        if (resJsonObj.status === 200) {
+          fillData(resJsonObj);
+        } else {
+          alert("No data found for the given Shipment ID.");
+        }
+      }
+
+      function fillData(resJsonObj) {
+        $("#shipmentId").val(resJsonObj.data.shipmentId);
+        $("#description").val(resJsonObj.data.description);
+        $("#source").val(resJsonObj.data.source);
+        $("#destination").val(resJsonObj.data.destination);
+        $("#shippingDate").val(resJsonObj.data.shippingDate);
+        $("#expectedDeliveryDate").val(resJsonObj.data.expectedDeliveryDate);
+      }
+    </script>
+  </body>
+</html>
